@@ -1,0 +1,93 @@
+diff --git a/arch/arm/boot/dts/am335x-boneblack.dts b/arch/arm/boot/dts/am335x-boneblack.dts
+index cb9cee37887..f5bf838b9f9 100644
+--- a/arch/arm/boot/dts/am335x-boneblack.dts
++++ b/arch/arm/boot/dts/am335x-boneblack.dts
+@@ -172,3 +172,88 @@
+ 		"NC",
+ 		"NC";
+ };
++
++&ocp {
++	P9_17_pinmux { status = "disable"; };
++	P9_18_pinmux { status = "disable"; };
++	P9_19_pinmux { status = "disable"; };
++	P9_20_pinmux { status = "disable"; };
++	P9_21_pinmux { status = "disable"; };
++	P9_22_pinmux { status = "disable"; };
++};
++
++&am33xx_pinmux {
++	ra02_spi_pins: ra02_spi_pins {
++		pinctrl-single,pins = <
++			AM33XX_PADCONF(0x95C, PIN_OUTPUT_PULLUP, MUX_MODE7)	/* P9-17 CSS  */
++			AM33XX_PADCONF(0x958, PIN_OUTPUT, MUX_MODE7)		/* P9-18 MOSI */
++			AM33XX_PADCONF(0x954, PIN_INPUT, MUX_MODE7)		/* P9-21 MISO */
++			AM33XX_PADCONF(0x950, PIN_OUTPUT, MUX_MODE7)		/* P9-22 SCLK */
++		>;
++	};
++	ra02_pins: ra02_pins {
++		pinctrl-single,pins = <
++			AM33XX_PADCONF(0x97C, PIN_OUTPUT, MUX_MODE7)		/* P9-19 RESET */
++			AM33XX_PADCONF(0x978, PIN_INPUT, MUX_MODE7)		/* P9-20 DIO0 */
++		>;
++	};
++};
++
++// &spi0 {
++// 	status = "disable";
++// 	pinctrl-names = "default";
++// 	pinctrl-0 = <&ra02_spi_pins>;
++
++// 	ra02lora: ra02-lora@0 {
++// 		pinctrl-names = "default";
++// 		pinctrl-0 = <&ra02_pins>;
++// 		compatible = "sx127x-lora,nam";
++// 		reg = <0>;
++
++// 		frequency = <433000000>;
++// 		spreading-factor = <7>;
++// 		bandwidth = <7>; /* BandWidth 125KHz */
++// 		coding-rate = <1>; /* CR 4/5 */
++// 		power = <20>;
++// 		preamble = <8>;
++// 		spi-max-frequency = <9000000>;
++// 		dio0-gpios = <&gpio0 12 GPIO_ACTIVE_HIGH>;
++// 		reset-gpios = <&gpio0 13 GPIO_ACTIVE_HIGH>;
++// 		status = "disable";
++// 	};
++// };
++
++/ {
++	lora-soft-spi {
++		status = "okay";
++		compatible = "spi-gpio";
++		pinctrl-names = "default";
++		pinctrl-0 = <&ra02_spi_pins>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		sck-gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>;
++		miso-gpios = <&gpio0 3 GPIO_ACTIVE_HIGH>;
++		mosi-gpios = <&gpio0 4 GPIO_ACTIVE_HIGH>;
++		cs-gpios = <&gpio0 5 GPIO_ACTIVE_HIGH>;
++		num-chipselects = <1>;
++
++		ra02lora: ra02-lora@0 {
++			compatible = "sx127x-lora,nam";
++			pinctrl-names = "default";
++			pinctrl-0 = <&ra02_pins>;
++			reg = <0>;
++
++			frequency = <433000000>;
++			spreading-factor = <7>;
++			bandwidth = <7>; /* BandWidth 125KHz */
++			coding-rate = <1>; /* CR 4/5 */
++			power = <20>;
++			preamble = <8>;
++			spi-max-frequency = <9000000>;
++			dio0-gpios = <&gpio0 12 GPIO_ACTIVE_HIGH>;
++			reset-gpios = <&gpio0 13 GPIO_ACTIVE_HIGH>;
++			status = "okay";
++		};
++	};
++};
